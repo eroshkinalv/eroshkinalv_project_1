@@ -12,7 +12,6 @@ date_and_time = current_date_and_time.strftime('%d.%m.%Y')
 tr_data = get_transactions_from_excel()
 
 
-@log('report_weekday')
 def spending_by_weekday(date: Optional[str] = None, transactions: pd.DataFrame = tr_data) -> pd.DataFrame:
     """Возвращает средние траты в каждый из дней недели за последние три месяца (от переданной даты)"""
 
@@ -79,7 +78,6 @@ def spending_by_weekday(date: Optional[str] = None, transactions: pd.DataFrame =
     return df
 
 
-@log('report_category')
 def spending_by_category(category: str,
                          transactions: pd.DataFrame = tr_data,
                          date: Optional[str] = None) -> pd.DataFrame:
@@ -111,7 +109,6 @@ def spending_by_category(category: str,
     return df
 
 
-@log()
 def spending_by_workday(date: Optional[str] = None, transactions: pd.DataFrame = tr_data) -> pd.DataFrame:
     """Возвращает средние траты в рабочий и в выходной день за последние три месяца (от переданной даты)"""
 
