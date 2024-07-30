@@ -8,7 +8,7 @@ from src.utils import (expenses_by_category, expenses_this_month_by_card, get_ca
 
 current_date_and_time = datetime.datetime.now()
 
-logging.basicConfig(filename=r'C:\Users\liudo\PycharmProjects\Project1_eroshkinalv\log\views.log', encoding='utf-8',
+logging.basicConfig(filename=r'..\log\views.log', encoding='utf-8',
                     filemode='w',
                     format='%(asctime)s, %(filename)s, %(levelname)s: %(message)s',
                     level=logging.INFO)
@@ -38,9 +38,11 @@ def homepage(date_and_time: datetime.datetime) -> json:
 
         homepage_data['stock_prices'] = get_stock_price(date_and_time)
 
+        json_response = json.dumps(homepage_data, indent=4, ensure_ascii=False)
+        logging.info('JSON-ответ "Главная" успешно сформирован.')
+
     except Exception:
         logging.error('JSON-ответ "Главная" не сформирован.')
-        pass
 
     else:
         json_response = json.dumps(homepage_data, indent=4, ensure_ascii=False)
@@ -70,9 +72,13 @@ def recent_activity(current_date: datetime.datetime, period: str = 'M') -> json:
 
         recent_actions['income']['main'] = get_income_by_category(current_date, period)
 
-        # recent_actions['currency_rates'] = [{'currency': k, 'rate': v} for k, v in get_exchange_rate().items()]
-        #
-        # recent_actions['stock_prices'] = get_stock_price(current_date)
+        recent_actions['currency_rates'] = [{'currency': k, 'rate': v} for k, v in get_exchange_rate().items()]
+
+        recent_actions['stock_prices'] = get_stock_price(current_date)
+
+        json_response = json.dumps(recent_actions, indent=4, ensure_ascii=False)
+
+        logging.info('JSON-ответ "События" успешно сформирован.')
 
     except Exception:
         logging.error('JSON-ответ "События" не сформирован.')

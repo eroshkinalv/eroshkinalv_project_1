@@ -1,7 +1,5 @@
-from typing import Optional, Any, Callable
 from functools import wraps
-
-file_path = r'C:\Users\liudo\PycharmProjects\Project1_eroshkinalv\log'
+from typing import Any, Callable, Optional
 
 
 def log(filename: Optional[str] = None) -> Callable:
@@ -18,13 +16,14 @@ def log(filename: Optional[str] = None) -> Callable:
                 result = my_function(*args, **kwargs)
 
                 for arg in args:
-                    if not isinstance(arg, int) or isinstance(arg, float):
+                    if not isinstance(arg, str):
                         raise TypeError()
 
             except TypeError:
 
                 if filename is not None:
-                    with open(rf'..\log\{filename}.log', "a", encoding="utf-8") as file:
+                    with open(rf'C:\Users\liudo\PycharmProjects\skypro_project_1\log\{filename}.log',
+                              "a", encoding="utf-8") as file:
                         file.write(f"my_function error: <TypeError>. Inputs: {args}, {kwargs}\n")
 
                 return f"my_function error: <TypeError>. Inputs: {args}, {kwargs}\n"
@@ -32,7 +31,8 @@ def log(filename: Optional[str] = None) -> Callable:
             else:
 
                 if filename is not None:
-                    with open(rf'..\log\{filename}.log', "a", encoding="utf-8") as file:
+                    with open(rf'C:\Users\liudo\PycharmProjects\skypro_project_1\log\{filename}.log',
+                              "a", encoding="utf-8") as file:
                         file.write("my_function ok\n")
                         return result
                 else:

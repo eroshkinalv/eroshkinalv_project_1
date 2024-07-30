@@ -7,13 +7,13 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-op_xlsx = r'C:\Users\liudo\PycharmProjects\Project1_eroshkinalv\data\operations.xlsx'
+op_xlsx = r'C:\Users\liudo\PycharmProjects\skypro_project_1\data\operations.xlsx'
 
 load_dotenv(r"../.env")
 currency_exchange_api = os.getenv('CURRENCY_EXCHANGE_API_KEY')
 st_api = os.getenv('STOCK_PRICES_API_KEY')
 
-with open(r'C:\Users\liudo\PycharmProjects\Project1_eroshkinalv\user_settings.json', 'r', encoding='utf-8') as file:
+with open(r'C:\Users\liudo\PycharmProjects\skypro_project_1\user_settings.json', 'r', encoding='utf-8') as file:
     user_settings = json.load(file)
 
 
@@ -47,7 +47,7 @@ def get_card_number(xlsx_file: str = op_xlsx) -> List:
     return card_numbers
 
 
-def get_data_this_month(current_date: datetime.datetime, xlsx_file: str) -> pd.DataFrame:
+def get_data_this_month(current_date: datetime.datetime, xlsx_file: str = op_xlsx) -> pd.DataFrame:
     """Возвращает DataFrame с данными о банковских операциях
     за период с первого числа текущего месяца по текущее число."""
 
@@ -374,7 +374,7 @@ def get_stock_price(current_date: datetime.datetime, stock_symbols: Optional[dic
 
         stock_exchange_rate.append(stock_info)
 
-    return stock_info
+    return stock_exchange_rate
 
 
 def get_transactions_from_excel(xlsx_file: str = op_xlsx):
@@ -391,6 +391,18 @@ def get_transactions_dict(xlsx_file: str = op_xlsx):
 
     try:
         excel_data = pd.read_excel(xlsx_file)
+
+        tr_dates = list(excel_data['Дата операции'])
+
+        transactions_list = []
+
+        for date in tr_dates:
+            tr_amount = excel_data.loc[excel_data['Дата операции'] == date]
+            amount = (list(tr_amount['Сумма платежа']))
+            tr_date = datetime.datetime.strptime(date, '%d.%m.%Y %H:%M:%S')
+            date = tr_date.strftime('%Y-%m-%d')
+            date_amount = {date: amount[0]}
+            transactions_list.append(date_amount)
 
     except FileNotFoundError:
         transactions_list = pd.DataFrame([])

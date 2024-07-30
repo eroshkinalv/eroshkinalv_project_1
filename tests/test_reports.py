@@ -1,9 +1,8 @@
-import datetime
-import pytest
-from src.reports import spending_by_weekday, spending_by_category, spending_by_workday
-
 from unittest.mock import patch
+
 import pandas
+
+from src.reports import spending_by_category, spending_by_weekday, spending_by_workday
 
 
 @patch("pandas.DataFrame")

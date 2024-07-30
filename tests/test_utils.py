@@ -1,13 +1,11 @@
 
-from src.utils import greeting
-
-from src.utils import get_card_number, get_data_this_month, expenses_this_month_by_card, get_cashback_amount
-from src.utils import get_top_five_transactions, total_expenses_in_period, get_data_in_period, expenses_by_category
-from src.utils import get_transfers_and_cash, get_total_income_in_period, get_income_by_category, get_exchange_rate
-from src.utils import get_stock_price, get_transactions_dict
-from unittest.mock import patch
 import datetime
-import pandas
+from unittest.mock import patch
+
+from src.utils import (expenses_by_category, expenses_this_month_by_card, get_card_number, get_cashback_amount,
+                       get_exchange_rate, get_income_by_category, get_stock_price, get_top_five_transactions,
+                       get_total_income_in_period, get_transactions_dict, get_transfers_and_cash, greeting,
+                       total_expenses_in_period)
 
 
 @patch('time.strftime')
@@ -82,7 +80,6 @@ def test_expenses_this_month_by_card(mock_excel,
 
     assert expenses_this_month_by_card(current_date_and_time, ['1112']) == {'1112': 0.0}
     assert expenses_this_month_by_card(current_date_and_time, ['5091']) == {'5091': 1.07}
-
 
 
 @patch("pandas.read_excel")
@@ -186,5 +183,12 @@ def test_get_stock_price(mock_loads, external_api_stock):
 
     mock_loads.return_value = external_api_stock
     current_date_and_time = datetime.datetime.strptime('2024-07-27 03:55:00', '%Y-%m-%d %H:%M:%S')
-    assert get_stock_price(current_date_and_time, ['IBM']) == {'stock': 'IBM', 'price': 192.0}
+    assert get_stock_price(current_date_and_time, ['IBM']) == [{'stock': 'IBM', 'price': 192.0}]
 
+
+@patch("pandas.read_excel")
+def test_get_transactions_dict(mock_excel, operations_excel_file_dataframe):
+
+    mock_excel.return_value = operations_excel_file_dataframe
+
+    assert get_transactions_dict(operations_excel_file_dataframe) == [{'2021-11-30': -95.0}, {'2021-11-30': -103.0}]

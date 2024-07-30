@@ -1,6 +1,7 @@
 import datetime
+import logging
 from typing import Optional
-from log.logging import log
+
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
@@ -10,6 +11,13 @@ current_date_and_time = datetime.datetime.now()
 date_and_time = current_date_and_time.strftime('%d.%m.%Y')
 
 tr_data = get_transactions_from_excel()
+
+logging.basicConfig(filename=r'..\log\reports.log', encoding='utf-8',
+                    filemode='a',
+                    format='%(asctime)s, %(filename)s, %(funcName)s, %(levelname)s: %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 
 def spending_by_weekday(date: Optional[str] = None, transactions: pd.DataFrame = tr_data) -> pd.DataFrame:
@@ -60,20 +68,22 @@ def spending_by_weekday(date: Optional[str] = None, transactions: pd.DataFrame =
 
     if monday:
         avg_per_weekday['Понедельник'] = round(sum(monday) / len(monday))
-    elif tuesday:
+    if tuesday:
         avg_per_weekday['Вторник'] = round(sum(tuesday) / len(tuesday))
-    elif wednesday:
+    if wednesday:
         avg_per_weekday['Среда'] = round(sum(wednesday) / len(wednesday))
-    elif thursday:
+    if thursday:
         avg_per_weekday['Четверг'] = round(sum(thursday) / len(thursday))
-    elif friday:
+    if friday:
         avg_per_weekday['Пятница'] = round(sum(friday) / len(friday))
-    elif saturday:
+    if saturday:
         avg_per_weekday['Суббота'] = round(sum(saturday) / len(saturday))
-    elif sunday:
+    if sunday:
         avg_per_weekday['Воскресенье'] = round(sum(sunday) / len(sunday))
 
-    df = pd.DataFrame(avg_per_weekday)
+    df = pd.DataFrame(avg_per_weekday, index=["Траты по дням недели"])
+
+    logging.info(f'Отчет "Траты по дням недели": {avg_per_weekday}')
 
     return df
 
@@ -104,7 +114,9 @@ def spending_by_category(category: str,
 
     sp_sum = {category: round(sum(sp_by_list))}
 
-    df = pd.DataFrame(sp_sum)
+    df = pd.DataFrame(sp_sum, index=['Траты'])
+
+    logging.info(f'Отчет "Траты по категории": {sp_sum}')
 
     return df
 
@@ -153,15 +165,17 @@ def spending_by_workday(date: Optional[str] = None, transactions: pd.DataFrame =
         elif date_f.weekday() == 6 and tr['Сумма платежа'] < 0:
             sunday.append(tr['Сумма платежа'])
 
-    avg_per_weekday = {}
+    avg_per_workday = {}
 
     mon_to_fri = monday + tuesday + wednesday + thursday + friday
     if len(mon_to_fri) != 0:
-        avg_per_weekday['Будни'] = round(sum(mon_to_fri) / len(mon_to_fri))
+        avg_per_workday['Будни'] = round(sum(mon_to_fri) / len(mon_to_fri))
 
     if len(saturday + sunday) != 0:
-        avg_per_weekday['Выходные'] = round(sum(saturday + sunday) / len(saturday + sunday))
+        avg_per_workday['Выходные'] = round(sum(saturday + sunday) / len(saturday + sunday))
 
-    df = pd.DataFrame(avg_per_weekday)
+    df = pd.DataFrame(avg_per_workday, ['Траты'])
+
+    logging.info(f'Отчет "Траты в рабочий/выходной день": {avg_per_workday}')
 
     return df

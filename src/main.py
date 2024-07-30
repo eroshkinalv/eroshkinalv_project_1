@@ -2,14 +2,17 @@ import datetime
 import json
 
 from src.reports import spending_by_category, spending_by_weekday, spending_by_workday
-from src.services import cashback_offers, investment_bank, search_by_phone_numbers, search_transfers, simple_search
+from src.services import cashback_offers, investment_bank
 from src.views import homepage, recent_activity
 
 current_date_and_time = datetime.datetime.now()
 
 
-def main(request: str) -> json:
+def main(json_request: str) -> json:
     """Функция получает некий JSON-запрос и возвращает JSON-ответ """
+
+    with open(json_request, 'r', encoding='utf-8') as file:
+        request = json.load(file)
 
     if request == 'homepage':
 
@@ -39,33 +42,13 @@ def main(request: str) -> json:
 
         return json_response
 
-    elif request == 'search':
-
-        if request['search'] == 'simple':
-
-            search_by_word = simple_search(input('Введите слово для поиска: '))
-
-            return search_by_word
-
-        elif request['search'] == 'phone':
-
-            search_by_phone = search_by_phone_numbers(input('Введите номер для поиска: '))
-
-            return search_by_phone
-
-        elif request['search'] == 'transaction':
-
-            search_transactions = search_transfers()
-
-            return search_transactions
-
     elif request == 'report':
 
         if request['report'] == 'category':
 
             expenses_by_category = spending_by_category(input('Введите категорию: '))
 
-            json_response = json.dumps(expenses_by_category, indent=4, ensure_ascii=False)
+            json_response = expenses_by_category.to_json(orient='records', force_ascii=False)
 
             return json_response
 
@@ -73,7 +56,7 @@ def main(request: str) -> json:
 
             expenses_by_weekday = spending_by_weekday(input('Введите дату: '))
 
-            json_response = json.dumps(expenses_by_weekday, indent=4, ensure_ascii=False)
+            json_response = expenses_by_weekday.to_json(orient='records', force_ascii=False)
 
             return json_response
 
@@ -81,6 +64,6 @@ def main(request: str) -> json:
 
             expenses_by_workday = spending_by_workday(input('Введите дату: '))
 
-            json_response = json.dumps(expenses_by_workday, indent=4, ensure_ascii=False)
+            json_response = expenses_by_workday.to_json(orient='records')
 
             return json_response
