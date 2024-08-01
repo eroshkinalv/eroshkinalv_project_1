@@ -14,25 +14,25 @@ def main(json_request: str) -> json:
     with open(json_request, 'r', encoding='utf-8') as file:
         request = json.load(file)
 
-    if request == 'homepage':
+    if request['page'] == 'homepage':
 
         views_homepage = homepage(current_date_and_time)
 
         return views_homepage
 
-    elif request == 'activity':
+    elif request['page'] == 'activity':
 
         views_recent_activity = recent_activity(current_date_and_time, request['period'])
 
         return views_recent_activity
 
-    elif request == 'cashback':
+    elif request['page'] == 'cashback':
 
         services_cashback_offers = cashback_offers(request['year'], request['month'])
 
         return services_cashback_offers
 
-    elif request == 'investment':
+    elif request['page'] == 'investment':
 
         services_investment = investment_bank(request['month'], request['limit'])
 
@@ -42,7 +42,7 @@ def main(json_request: str) -> json:
 
         return json_response
 
-    elif request == 'report':
+    elif request['page'] == 'report':
 
         if request['report'] == 'category':
 

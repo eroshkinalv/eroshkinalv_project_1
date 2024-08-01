@@ -7,13 +7,15 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-op_xlsx = r'C:\Users\liudo\PycharmProjects\skypro_project_1\data\operations.xlsx'
+op_xlsx = os.path.abspath(r'..\data\operations.xlsx')
+
+# op_xlsx = r'C:\Users\liudo\PycharmProjects\skypro_project_1\data\operations.xlsx'
 
 load_dotenv(r"../.env")
 currency_exchange_api = os.getenv('CURRENCY_EXCHANGE_API_KEY')
 st_api = os.getenv('STOCK_PRICES_API_KEY')
 
-with open(r'C:\Users\liudo\PycharmProjects\skypro_project_1\user_settings.json', 'r', encoding='utf-8') as file:
+with open(r'..\user_settings.json', 'r', encoding='utf-8') as file:
     user_settings = json.load(file)
 
 
@@ -425,3 +427,8 @@ def get_transactions_dict(xlsx_file: str = op_xlsx):
             transactions_list.append(date_amount)
 
     return transactions_list
+
+
+if __name__ == '__main__':
+    print(get_card_number())
+    print(user_settings)
