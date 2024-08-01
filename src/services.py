@@ -12,7 +12,7 @@ xlsx_data = get_transactions_from_excel()
 
 current_date_and_time = datetime.datetime.now()
 
-logging.basicConfig(filename=r'..\log\services.log', encoding='utf-8',
+logging.basicConfig(filename=r'../log/services.log', encoding='utf-8',
                     filemode='a',
                     format='%(asctime)s, %(filename)s, %(funcName)s, %(levelname)s: %(message)s',
                     level=logging.INFO)

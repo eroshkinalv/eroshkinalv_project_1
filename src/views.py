@@ -8,9 +8,9 @@ from src.utils import (expenses_by_category, expenses_this_month_by_card, get_ca
 
 current_date_and_time = datetime.datetime.now()
 
-logging.basicConfig(filename=r'..\log\views.log', encoding='utf-8',
+logging.basicConfig(filename=r'../log/views.log', encoding='utf-8',
                     filemode='w',
-                    format='%(asctime)s, %(filename)s, %(levelname)s: %(message)s',
+                    format='%(asctime)s, %(filename)s, %(funcName)s, %(levelname)s: %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
@@ -34,12 +34,11 @@ def homepage(date_and_time: datetime.datetime) -> json:
 
         homepage_data['top_transactions'] = get_top_five_transactions(date_and_time)
 
-        homepage_data['currency_rates'] = [{'currency': k, 'rate': v} for k, v in get_exchange_rate().items()]
+        # homepage_data['currency_rates'] = [{'currency': k, 'rate': v} for k, v in get_exchange_rate().items()]
 
-        homepage_data['stock_prices'] = get_stock_price(date_and_time)
+        # homepage_data['stock_prices'] = get_stock_price(date_and_time)
 
         json_response = json.dumps(homepage_data, indent=4, ensure_ascii=False)
-        logging.info('JSON-ответ "Главная" успешно сформирован.')
 
     except Exception:
         logging.error('JSON-ответ "Главная" не сформирован.')
@@ -78,8 +77,6 @@ def recent_activity(current_date: datetime.datetime, period: str = 'M') -> json:
 
         json_response = json.dumps(recent_actions, indent=4, ensure_ascii=False)
 
-        logging.info('JSON-ответ "События" успешно сформирован.')
-
     except Exception:
         logging.error('JSON-ответ "События" не сформирован.')
 
@@ -88,3 +85,5 @@ def recent_activity(current_date: datetime.datetime, period: str = 'M') -> json:
         logging.info('JSON-ответ "События" успешно сформирован.')
 
     return json_response
+
+print(homepage(current_date_and_time))
