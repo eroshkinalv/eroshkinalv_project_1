@@ -376,7 +376,7 @@ def get_stock_price(current_date: datetime.datetime, stock_symbols: Optional[dic
 
         stock_exchange_rate.append(stock_info)
 
-    return stock_data
+    return stock_exchange_rate
 
 
 def get_transactions_from_excel(xlsx_file: str = op_xlsx):
