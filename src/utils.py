@@ -15,7 +15,7 @@ load_dotenv(r"../.env")
 currency_exchange_api = os.getenv('CURRENCY_EXCHANGE_API_KEY')
 st_api = os.getenv('STOCK_PRICES_API_KEY')
 
-with open(r'../user_settings.json', 'r', encoding='utf-8') as file:
+with open(os.path.abspath(r'../user_settings.json'), 'r', encoding='utf-8') as file:
     user_settings = json.load(file)
 
 
@@ -348,7 +348,7 @@ def get_stock_price(current_date: datetime.datetime, stock_symbols: Optional[dic
 
     delta = datetime.timedelta(hours=8)
 
-    est_time = (current_date - delta).strftime('%Y-%m-%d %H:%M:00')
+    est_time = (current_date - delta).strftime('%Y-%m-%d %H:%M:%S')
 
     if int((current_date - delta).strftime('%H')) >= 20:
         est_time = (current_date - delta).strftime('%Y-%m-%d 19:59:00')
@@ -376,7 +376,7 @@ def get_stock_price(current_date: datetime.datetime, stock_symbols: Optional[dic
 
         stock_exchange_rate.append(stock_info)
 
-    return stock_exchange_rate
+    return stock_data
 
 
 def get_transactions_from_excel(xlsx_file: str = op_xlsx):
@@ -427,3 +427,11 @@ def get_transactions_dict(xlsx_file: str = op_xlsx):
             transactions_list.append(date_amount)
 
     return transactions_list
+
+
+# if __name__ == '__main__':
+#     current_date_and_time = datetime.datetime.now()
+#     print(get_card_number())
+#     print(user_settings)
+#     print(get_stock_price(current_date_and_time, ['IBM']))
+#     print(get_top_five_transactions(current_date_and_time))

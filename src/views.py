@@ -16,12 +16,13 @@ logging.basicConfig(filename=r'../log/views.log', encoding='utf-8',
 logger = logging.getLogger(__name__)
 
 
-def homepage(date_and_time: datetime.datetime) -> json:
+def homepage(date_and_time: datetime.datetime = current_date_and_time) -> json:
     """Генерирует JSON-ответ для страницы «Главная»."""
 
     try:
 
         homepage_data = {'greeting': greeting(date_and_time), 'cards': []}
+        logging.info(f'{homepage_data}')
 
         total_spent = expenses_this_month_by_card(date_and_time, get_card_number())
 
@@ -31,26 +32,32 @@ def homepage(date_and_time: datetime.datetime) -> json:
             homepage_data['cards'] = [{'last_digits': num,
                                        'total_spent': "%.2f" % total_spent[num],
                                        'cashback': "%.2f" % cashback_amount[num]}]
+        logging.info(f'{homepage_data}')
 
         homepage_data['top_transactions'] = get_top_five_transactions(date_and_time)
+        logging.info(f'{homepage_data}')
 
-        # homepage_data['currency_rates'] = [{'currency': k, 'rate': v} for k, v in get_exchange_rate().items()]
+        homepage_data['currency_rates'] = [{'currency': k, 'rate': v} for k, v in get_exchange_rate().items()]
+        logging.info(f'{homepage_data}')
 
-        # homepage_data['stock_prices'] = get_stock_price(date_and_time)
+        homepage_data['stock_prices'] = get_stock_price(date_and_time)
+        logging.info(f'{homepage_data}')
 
         json_response = json.dumps(homepage_data, indent=4, ensure_ascii=False)
+
+        logging.info('JSON-ответ "Главная" успешно сформирован.')
+
+        return json_response
 
     except Exception:
         logging.error('JSON-ответ "Главная" не сформирован.')
 
     else:
-        json_response = json.dumps(homepage_data, indent=4, ensure_ascii=False)
         logging.info('JSON-ответ "Главная" успешно сформирован.')
+        return json_response
 
-    return json_response
 
-
-def recent_activity(current_date: datetime.datetime, period: str = 'M') -> json:
+def recent_activity(current_date: datetime.datetime = current_date_and_time, period: str = 'M') -> json:
     """Генерирует JSON-ответ для страницы «События»."""
 
     try:
@@ -77,13 +84,18 @@ def recent_activity(current_date: datetime.datetime, period: str = 'M') -> json:
 
         json_response = json.dumps(recent_actions, indent=4, ensure_ascii=False)
 
+        logging.info('JSON-ответ "События" успешно сформирован.')
+
+        return json_response
+
     except Exception:
         logging.error('JSON-ответ "События" не сформирован.')
 
     else:
-        json_response = json.dumps(recent_actions, indent=4, ensure_ascii=False)
         logging.info('JSON-ответ "События" успешно сформирован.')
+        return json_response
 
-    return json_response
 
-print(homepage(current_date_and_time))
+# if __name__ == '__main__':
+#     print(homepage())
+#     print(recent_activity())
