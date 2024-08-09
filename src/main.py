@@ -34,7 +34,10 @@ def main(json_request: str) -> json:
 
     elif request['page'] == 'investment':
 
-        services_investment = investment_bank(request['month'], request['limit'])
+        user_month = input('Введите месяц, для которого рассчитывается отложенная сумма в формате "YYYY-MM"')
+        user_limit = int(input('Введите предел, до которого нужно округлять суммы операций (10, 50, 100)'))
+
+        services_investment = investment_bank(user_month, user_limit)
 
         result = {'investment': services_investment}
 

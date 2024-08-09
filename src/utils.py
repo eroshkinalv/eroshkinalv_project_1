@@ -344,29 +344,22 @@ def get_exchange_rate(currency: Optional[dict] = None) -> Dict:
 
 
 def get_stock_price(current_date: datetime.datetime, stock_symbols: Optional[dict] = None) -> List:
-    """Возвращает курс акций на момент запроса"""
-
-    delta = datetime.timedelta(hours=8)
-
-    est_time = (current_date - delta).strftime('%Y-%m-%d %H:%M:%S')
-
-    if int((current_date - delta).strftime('%H')) >= 20:
-        est_time = (current_date - delta).strftime('%Y-%m-%d 19:59:00')
-
-    elif int((current_date - delta).strftime('%H')) < 10:
-        delta = datetime.timedelta(days=1)
-        est_time = (current_date - delta).strftime('%Y-%m-%d 19:59:00')
+    """Возвращает курс акций на 19:00(UTC-4) предыдущего дня"""
 
     if stock_symbols is None:
         stock_symbols = user_settings['user_stocks']
+
+    delta = datetime.timedelta(days=1, hours=8)
+
+    est_time = (current_date - delta).strftime('%Y-%m-%d 19:00:00')
 
     stock_exchange_rate = []
 
     for s in stock_symbols:
         function = 'TIME_SERIES_INTRADAY'
-        url = f'https://www.alphavantage.co/query?function={function}&symbol={s}&interval=1min&apikey={st_api}'
+        url = f'https://www.alphavantage.co/query?function={function}&symbol={s}&interval=60min&apikey={st_api}'
         stock_data = json.loads(requests.get(url).text)
-        stock_time = stock_data.get('Time Series (1min)')
+        stock_time = stock_data.get('Time Series (60min)')
         stock_price = stock_time[est_time]
 
         stock_info = {}
@@ -432,6 +425,6 @@ def get_transactions_dict(xlsx_file: str = op_xlsx):
 # if __name__ == '__main__':
 #     current_date_and_time = datetime.datetime.now()
 #     print(get_card_number())
-#     print(user_settings)
+#     print(get_exchange_rate(['USD']))
 #     print(get_stock_price(current_date_and_time, ['IBM']))
 #     print(get_top_five_transactions(current_date_and_time))
